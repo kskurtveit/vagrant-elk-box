@@ -43,11 +43,6 @@ elasticsearch::instance { 'es-01':
   before => Exec['start kibana']
 }
 
-elasticsearch::plugin{'royrusso/elasticsearch-HQ':
-  module_dir => 'HQ',
-  instances  => 'es-01'
-}
-
 # Logstash
 class { 'logstash':
   autoupgrade  => true,
