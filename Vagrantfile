@@ -1,19 +1,12 @@
-# -*- mode: ruby -*-
-# vi: set ft=ruby :
-
 # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
 VAGRANTFILE_API_VERSION = "2"
 
 $script = <<SCRIPT
 # Install wget
-sudo yum -y install wget;
-sudo yum -y install http://yum.puppetlabs.com/el/6/products/x86_64/puppetlabs-release-6-11.noarch.rpm
-sudo yum -y install puppet facter
-
-
-# Update puppet installation
-#wget https://raw.githubusercontent.com/hashicorp/puppet-bootstrap/master/ubuntu.sh
-sh install-puppet.sh
+yum -y install wget;
+yum -y install http://yum.puppetlabs.com/el/6/products/x86_64/puppetlabs-release-6-11.noarch.rpm
+yum -y install puppet facter
+yum -y install rubygems
 
 mkdir -p /etc/puppet/modules;
 if [ ! -d /etc/puppet/modules/file_concat ]; then
@@ -41,8 +34,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vbguest.auto_update = true
   end
 
-#  config.vm.box = "ubuntu/trusty64"
-   config.vm.box = "http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_centos-6.5_chef-provisionerless.box"
+  config.vm.box = "http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_centos-6.5_chef-provisionerless.box"
   config.vm.network :forwarded_port, guest: 5601, host: 5601
   config.vm.network :forwarded_port, guest: 9200, host: 9200
   config.vm.network :forwarded_port, guest: 9300, host: 9300
