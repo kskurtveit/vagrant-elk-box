@@ -7,13 +7,13 @@ define append_if_no_such_line($file, $line, $refreshonly = 'false') {
 }
 
 # Update APT Cache
-class { 'apt':
-  always_apt_update => true,
+class { 'yum':
+  update => 'cron',
 }
 
-exec { 'apt-get update':
+exec { 'yum update':
   before  => [ Class['logstash'] ],
-  command => '/usr/bin/apt-get update -qq'
+  command => '/usr/bin/yum update -y'
 }
 
 file { '/vagrant/elasticsearch':
@@ -50,7 +50,7 @@ elasticsearch::plugin{'royrusso/elasticsearch-HQ':
 
 # Logstash
 class { 'logstash':
-  # autoupgrade  => true,
+  autoupgrade  => true,
   ensure       => 'present',
   manage_repo  => true,
   repo_version => '1.4',
@@ -66,7 +66,7 @@ file { '/etc/logstash/conf.d/logstash':
 # Kibana
 package { 'curl':
   ensure  => 'present',
-  require => [ Class['apt'] ],
+  require => [ Class['yum'] ],
 }
 
 file { '/vagrant/kibana':
@@ -79,7 +79,7 @@ file { '/vagrant/kibana':
 exec { 'download_kibana':
   command => '/usr/bin/curl -L https://download.elasticsearch.org/kibana/kibana/kibana-4.0.0-linux-x64.tar.gz | /bin/tar xvz -C /vagrant/kibana',
   require => [ Package['curl'], File['/vagrant/kibana'],Class['elasticsearch'] ],
-  timeout     => 1800
+  timeout     => 2800
 }
 
 exec {'start kibana':

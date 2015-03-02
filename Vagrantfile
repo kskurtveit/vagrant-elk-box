@@ -6,18 +6,22 @@ VAGRANTFILE_API_VERSION = "2"
 
 $script = <<SCRIPT
 # Install wget
-sudo apt-get install -qy wget;
+sudo yum -y install wget;
+sudo yum -y install http://yum.puppetlabs.com/el/6/products/x86_64/puppetlabs-release-6-11.noarch.rpm
+sudo yum -y install puppet facter
+
 
 # Update puppet installation
-wget https://raw.githubusercontent.com/hashicorp/puppet-bootstrap/master/ubuntu.sh
-sh ubuntu.sh
+#wget https://raw.githubusercontent.com/hashicorp/puppet-bootstrap/master/ubuntu.sh
+sh install-puppet.sh
 
 mkdir -p /etc/puppet/modules;
 if [ ! -d /etc/puppet/modules/file_concat ]; then
 puppet module install ispavailability/file_concat
 fi
-if [ ! -d /etc/puppet/modules/apt ]; then
-puppet module install puppetlabs-apt
+if [ ! -d /etc/puppet/modules/yum ]; then
+#puppet module install puppetlabs-apt
+puppet module install example42-yum
 fi
 if [ ! -d /etc/puppet/modules/java ]; then
 puppet module install puppetlabs-java
@@ -37,7 +41,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vbguest.auto_update = true
   end
 
-  config.vm.box = "ubuntu/trusty64"
+#  config.vm.box = "ubuntu/trusty64"
+   config.vm.box = "http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_centos-6.5_chef-provisionerless.box"
   config.vm.network :forwarded_port, guest: 5601, host: 5601
   config.vm.network :forwarded_port, guest: 9200, host: 9200
   config.vm.network :forwarded_port, guest: 9300, host: 9300
